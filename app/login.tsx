@@ -1,6 +1,4 @@
 import styled from "styled-components/native";
-import { TextInput } from "react-native-paper";
-import { useCallback } from "react";
 import { LoginForm } from "@/components/LoginForm/LoginForm";
 
 export default function Login() {

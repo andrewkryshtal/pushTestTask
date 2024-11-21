@@ -1,12 +1,13 @@
-import React, { useCallback } from "react";
+import React from "react";
 import CustomButton from "@/components/CustomButton";
 import styled from "styled-components";
 import { router } from "expo-router";
+import { ERoutes } from "@/constants/constantsVariables";
 
 export default function Home() {
-  const onLoginPressHandler = useCallback(() => {
+  const onLoginPressHandler = () => {
     router.push(ERoutes.LOGIN);
-  }, []);
+  };
 
   return (
     <Container>

@@ -1,17 +1,17 @@
 export interface HttpClient {
-  get<T>(url: string, config?: Record<string, unknown>): Promise<T>;
+  get<K>(url: string, config?: Record<string, unknown>): Promise<K>;
 
-  post<T>(
+  post<T, K>(
     url: string,
-    data?: unknown,
+    data?: T,
     config?: Record<string, unknown>
-  ): Promise<T>;
+  ): Promise<K>;
 
-  put<T>(
+  put<T, K>(
     url: string,
-    data?: unknown,
+    data?: T,
     config?: Record<string, unknown>
-  ): Promise<T>;
+  ): Promise<K>;
 
-  delete<T>(url: string, config?: Record<string, unknown>): Promise<T>;
+  delete<K>(url: string, config?: Record<string, unknown>): Promise<K>;
 }

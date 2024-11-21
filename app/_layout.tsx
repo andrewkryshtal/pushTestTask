@@ -1,34 +1,43 @@
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import { Stack, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import { ThemeProvider } from "styled-components/native";
 import { themeObject } from "@/constants/themeObject";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { secureStorageGetItem } from "@/storage/securedStorage";
 import { queryClient } from "@/api/http";
 import { checkToken } from "@/helpers/checkToken";
 import { ERoutes, userDataKey } from "@/constants/constantsVariables";
+import { AppState } from "react-native";
 
 export default function RootLayout() {
+  const appState = useRef(AppState.currentState);
+
   useEffect(() => {
     (async () => {
       const tokens = await secureStorageGetItem(userDataKey);
       if (tokens) {
-        console.log("tokens", tokens);
         router.push(ERoutes.PROFILE);
       } else {
         router.push(ERoutes.HOME);
       }
     })();
 
-    // not a best aproach, but since we dont have any request with token - its hard to come up with token check functionality. commented realization in interceptors
-    const interval = setInterval(async () => {
-      console.log("tick");
-      checkToken();
-    }, 5 * 60 * 1000);
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === "active"
+      ) {
+        checkToken();
+      }
 
-    return () => clearInterval(interval); // Очищаем таймер
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   return (

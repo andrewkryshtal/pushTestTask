@@ -4,6 +4,7 @@ import CustomButton from "@/components/CustomButton";
 import CustomHeader from "@/components/CustomHeader";
 import Constants from "expo-constants";
 import { router } from "expo-router";
+import { ERoutes, userDataKey } from "@/constants/constantsVariables";
 import {
   asyncStorageGetItem,
   asyncStorageSetItem,
@@ -26,7 +27,8 @@ export default function Profile() {
 
   useEffect(() => {
     (async () => {
-      setUserDataState(await asyncStorageGetItem(userDataKey));
+      const userData = await asyncStorageGetItem(userDataKey);
+      setUserDataState(userData);
     })();
   }, []);
 

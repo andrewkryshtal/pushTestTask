@@ -1,32 +1,54 @@
 import { HttpClient } from "./httpInstance";
 
-type TLoginParams = {
+interface ILoginParams {
   username: string;
   password: string;
-};
+}
 
-export const createApiService = (httpClient: HttpClient) => ({
-  login: async ({ username, password }: TLoginParams) => {
-    const response = await httpClient.post<Record<string, any>>("/auth/login", {
+interface IApiService {
+  login(params: ILoginParams): Promise<Record<string, any>>;
+  refresh(refreshToken: string): Promise<Record<string, unknown>>;
+  test(): Promise<Record<string, unknown>>;
+}
+
+class ApiServiceImpl implements IApiService {
+  private httpClient: HttpClient;
+
+  constructor(httpClient: HttpClient) {
+    this.httpClient = httpClient;
+  }
+
+  async login({
+    username,
+    password,
+  }: ILoginParams): Promise<Record<string, any>> {
+    const response = await this.httpClient.post<
+      Record<string, any>,
+      Record<string, any>
+    >("/auth/login", {
       username,
       password,
       expiresInMins: 1, // optional, default is 60
     });
 
     return response;
-  },
+  }
 
-  refresh: async (refreshToken: string) => {
-    const response = await httpClient.post<Record<string, any>>(
-      "/auth/refresh",
-      {
-        refreshToken,
-        expiresInMins: 1, // optional, default is 60
-      }
-    );
+  async refresh(refreshToken: string): Promise<Record<string, unknown>> {
+    const response = await this.httpClient.post<
+      Record<string, unknown>,
+      Record<string, unknown>
+    >("/auth/refresh", {
+      refreshToken,
+      expiresInMins: 1, // optional, default is 60
+    });
 
     return response;
-  },
+  }
 
-  test: async () => await httpClient.get("/test"),
-});
+  async test(): Promise<Record<string, unknown>> {
+    return await this.httpClient.get("/test");
+  }
+}
+
+export default ApiServiceImpl;

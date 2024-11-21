@@ -23,7 +23,6 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     // api returns 401 or 400 on incorrect user :(
-    console.error("API Error:", error);
     return Promise.reject(error);
   }
 );

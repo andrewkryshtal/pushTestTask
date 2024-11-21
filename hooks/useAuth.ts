@@ -24,6 +24,8 @@ export const useLoginMutation = () =>
         refreshToken,
       } = data;
 
+      console.log({ data });
+
       await asyncStorageSetItem(userDataKey, {
         firstName,
         lastName,
